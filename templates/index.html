@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="mx-auto flex min-h-screen w-full max-w-2xl flex-col px-4 py-10 sm:px-6 sm:py-16">
+  <header class="animate-rise mb-10">
+    <p class="mb-2 text-sm font-semibold tracking-[0.18em] text-accent uppercase">
+      Taskline
+    </p>
+    <h1 class="font-display text-4xl leading-tight text-ink sm:text-5xl">
+      Keep the day moving
+    </h1>
+    <p class="mt-3 max-w-md text-base text-slate">
+      Capture what matters, check it off, and clear the rest.
+    </p>
+  </header>
+
+  <form
+    method="post"
+    action="/todos"
+    class="animate-rise mb-6 flex gap-2"
+    style="animation-delay: 60ms"
+  >
+    <label class="sr-only" for="todo-title">New todo</label>
+    <input
+      id="todo-title"
+      name="title"
+      type="text"
+      required
+      maxlength="255"
+      placeholder="Add a task…"
+      class="w-full rounded-xl border border-mist bg-white/90 px-4 py-3 text-ink shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/20"
+    />
+    <button
+      type="submit"
+      class="rounded-xl bg-accent px-5 py-3 font-semibold text-white transition hover:bg-accent-dark"
+    >
+      Add
+    </button>
+  </form>
+
+  {% if error %}
+  <div class="animate-fade mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-danger">
+    {{ error }}
+  </div>
+  {% endif %}
+
+  <section
+    class="animate-rise overflow-hidden rounded-2xl border border-mist bg-white/85 shadow-sm backdrop-blur"
+    style="animation-delay: 120ms"
+  >
+    <div class="flex items-center justify-between border-b border-mist px-5 py-4">
+      <h2 class="text-sm font-semibold tracking-wide text-slate uppercase">Today</h2>
+      <span class="text-sm text-slate">{{ remaining }} remaining</span>
+    </div>
+
+    {% if todos %}
+    <ul class="divide-y divide-mist">
+      {% for todo in todos %}
+      <li class="animate-fade flex items-center gap-3 px-5 py-4" style="animation-delay: {{ loop.index0 * 40 }}ms">
+        <form method="post" action="/todos/{{ todo.id }}/toggle">
+          <button
+            type="submit"
+            aria-label="{% if todo.completed %}Mark incomplete{% else %}Mark complete{% endif %}"
+            class="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition {% if todo.completed %}border-accent bg-accent text-white{% else %}border-slate/30 bg-white hover:border-accent{% endif %}"
+          >
+            {% if todo.completed %}
+            <svg viewBox="0 0 16 16" class="h-3 w-3" aria-hidden="true">
+              <path fill="currentColor" d="M6.2 11.4 2.8 8l1.1-1.1 2.3 2.3 5-5L12.3 5z" />
+            </svg>
+            {% endif %}
+          </button>
+        </form>
+
+        <span class="flex-1 text-[15px] {% if todo.completed %}text-slate line-through{% else %}text-ink{% endif %}">
+          {{ todo.title }}
+        </span>
+
+        <form method="post" action="/todos/{{ todo.id }}/delete">
+          <button
+            type="submit"
+            class="rounded-lg px-2 py-1 text-sm text-slate transition hover:bg-mist hover:text-danger"
+          >
+            Delete
+          </button>
+        </form>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p class="px-5 py-8 text-sm text-slate">
+      No tasks yet. Add one above to get started.
+    </p>
+    {% endif %}
+  </section>
+
+  <footer class="mt-auto pt-10 text-center text-xs text-slate">
+    FastAPI · Jinja2 · Tailwind · Apache
+  </footer>
+</div>
+{% endblock %}
