@@ -49,6 +49,19 @@ fastapi-todo/
 | `POST` | `/todos/{id}/delete` | Delete a todo |
 | `GET` | `/health` | Health check JSON |
 
+## Python virtual environments (venv)
+
+A **virtual environment** is an isolated Python install for this project only. It keeps the packages in `requirements.txt` (FastAPI, uvicorn, Jinja2, etc.) separate from your system Python and from other projects, so versions do not clash.
+
+| Piece | Role |
+|--------|------|
+| `python -m venv .venv` | Creates a folder named `.venv` with its own `python` and `pip` |
+| `activate` | Puts that folder’s tools first on your `PATH` for the current terminal |
+| `pip install -r requirements.txt` | Installs app dependencies **into** `.venv`, not globally |
+| `deactivate` | Leaves the venv and returns to system Python |
+
+`setup.sh` and `run.sh` create/use `.venv` the same way on Linux/WSL. You do not commit `.venv` to git (it is listed in `.gitignore`); each machine recreates it locally.
+
 ## Local development (Windows / any OS)
 
 ```bash
@@ -61,6 +74,8 @@ source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --reload --port 5000
 ```
+
+When you are done in that terminal, run `deactivate`.
 
 Open [http://localhost:5000/](http://localhost:5000/).
 
